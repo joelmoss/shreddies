@@ -71,6 +71,14 @@ Both `#as_json` and `.render` accepts an `options` hash, which will be forwarded
 
 The following standard options are supported, and provide additional built-in functionality:
 
+#### `serializer`
+
+By default `#as_json` will look for a serializer named after your model. So a `User` model will automatically use the `UserSerializer`. Sometimes you want to use a different serializer class, in which case you can use the `serializer` option:
+
+```ruby
+User.all.as_json serializer: User::AdminSerializer
+```
+
 #### `index_by`
 
 Give this option a property of your serialized subject as a Symbol, and the returned collection will be a Hash keyed by that property.
@@ -97,6 +105,33 @@ User.all.as_json index_by: :id
 
   ...
 }
+```
+
+### Serializer Inheritance
+
+A serializer can inherit from any other serializer, which is a great way to create custom views:
+
+```ruby
+# app/serializers/user_serializer.rb
+class UserSerializer < Shreddies::Json
+  delegate :id, :first_name, :last_name, :email
+
+  def name
+    "#{first_name} #{last_name}"
+  end
+end
+
+class User::AdministratorSerializer < UserSerializer
+  def type
+    'administrator'
+  end
+end
+```
+
+Then call it like any other serializer:
+
+```ruby
+User::AdministratorSerializer.render(user)
 ```
 
 ## Development

@@ -18,6 +18,13 @@ class Shreddies::JsonTest < Minitest::Test
     assert_equal({ 'name' => 'Joel Moss', 'email' => 'joel@moss.com' }, UserSerializer.render(user))
   end
 
+  def test_render_namespaced_serializer
+    user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
+
+    assert_equal({ 'type' => :admin, 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
+                 User::AdminSerializer.render(user))
+  end
+
   def test_render_an_array
     data = [
       { first_name: 'Joel', last_name: 'Moss' },
