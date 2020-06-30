@@ -9,7 +9,7 @@ class Shreddies::JsonTest < Minitest::Test
 
   def test_render_a_single_plain_ruby_object
     expect = { 'name' => 'Joel Moss' }
-    assert_equal expect, MySerializer.render(first_name: 'Joel', last_name: 'Moss')
+    assert_equal expect, MyUserSerializer.render(first_name: 'Joel', last_name: 'Moss')
   end
 
   def test_render_a_single_active_record
@@ -35,7 +35,7 @@ class Shreddies::JsonTest < Minitest::Test
     ]
 
     assert_equal({ 'Joel' => { 'name' => 'Joel Moss' }, 'Joel2' => { 'name' => 'Joel2 Moss2' } },
-                 MySerializer.render(data, index_by: :first_name))
+                 MyUserSerializer.render(data, index_by: :first_name))
   end
 
   def test_render_a_collection_of_records

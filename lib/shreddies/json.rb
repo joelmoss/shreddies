@@ -28,7 +28,6 @@ module Shreddies
         end
       end
 
-      # legacy support - can be removed once all serializers ise JsonSerializer
       alias render_as_json render
     end
 

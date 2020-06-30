@@ -7,7 +7,7 @@ module Shreddies
         serializer = options.delete(:serializer) || "#{model_name}Serializer"
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
-          serializer.to_s.constantize.render self, options
+          serializer.to_s.constantize.render_as_json self, options
         else
           serializer.render self, options
         end
@@ -21,7 +21,7 @@ module Shreddies
         serializer = options.delete(:serializer) || "#{model_name}Serializer"
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
-          serializer.to_s.constantize.render self, options
+          serializer.to_s.constantize.render_as_json self, options
         else
           serializer.render self, options
         end
