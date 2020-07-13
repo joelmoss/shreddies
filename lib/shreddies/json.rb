@@ -31,7 +31,7 @@ module Shreddies
       alias render_as_json render
     end
 
-    # Monkey patches Rails Module#delegate so that the `:to` argument defaults tio `:subject`.
+    # Monkey patches Rails Module#delegate so that the `:to` argument defaults to `:subject`.
     def self.delegate(*methods, to: :subject, prefix: nil, allow_nil: nil, private: nil)
       super(*methods, to: to, prefix: prefix, allow_nil: allow_nil, private: private)
     end
@@ -43,16 +43,20 @@ module Shreddies
       @options = options
     end
 
+    # Travel through the ancestors that are serializers (class name ends with "Serializer"), and
+    # call all public instance methods, returning a hash.
     def as_json
       json = {}
+      methods = Set[]
 
-      methods = public_methods(false)
-      if self.class.superclass.to_s.end_with?('Serializer')
-        methods.concat self.class.superclass.public_instance_methods(false)
+      self.class.ancestors.each do |ancestor|
+        if ancestor.to_s.end_with?('Serializer')
+          methods.merge ancestor.public_instance_methods(false)
+        end
       end
 
-      methods.uniq.excluding(:subject, :options, :as_json).map do |attr|
-        json[attr] = public_send(attr)
+      methods.map do |attr|
+        json[attr.to_s.camelize :lower] = public_send(attr)
       end
 
       json.deep_transform_keys { |key| key.to_s.camelize :lower }

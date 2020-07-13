@@ -25,6 +25,13 @@ class Shreddies::JsonTest < Minitest::Test
                  User::AdminSerializer.render(user))
   end
 
+  def test_render_deep_namespaced_serializer
+    user = User::Admin.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
+
+    assert_equal({ 'adminTeam' => 'bots', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
+                 User::Admin::BotSerializer.render(user))
+  end
+
   def test_render_an_array
     data = [
       { first_name: 'Joel', last_name: 'Moss' },
