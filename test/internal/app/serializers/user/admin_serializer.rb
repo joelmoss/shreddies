@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User::AdminSerializer < UserSerializer
-  def type
-    :admin
+  def admin_team
+    'devs'
   end
 end
