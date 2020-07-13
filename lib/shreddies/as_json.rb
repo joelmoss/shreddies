@@ -7,12 +7,10 @@ module Shreddies
         serializer = options.delete(:serializer) || "#{model_name}Serializer"
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
-          serializer.to_s.constantize.render_as_json self, options
-        else
-          serializer.render self, options
+          serializer = serializer.to_s.safe_constantize
         end
-      rescue NameError
-        super
+
+        serializer ? serializer.render_as_json(self, options) : super
       end
     end
 
@@ -21,12 +19,10 @@ module Shreddies
         serializer = options.delete(:serializer) || "#{model_name}Serializer"
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
-          serializer.to_s.constantize.render_as_json self, options
-        else
-          serializer.render self, options
+          serializer = serializer.to_s.safe_constantize
         end
-      rescue NameError
-        super
+
+        serializer ? serializer.render_as_json(self, options) : super
       end
     end
   end
