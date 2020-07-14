@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+module ExplicitBody
+  def body
+    'explicit body'
+  end
+end
+
 class ArticleSerializer < Shreddies::Json
   delegate :title
 

@@ -66,6 +66,13 @@ class Shreddies::JsonTest < Minitest::Test
                  ArticleSerializer.render(data, module: :WithBody))
   end
 
+  def test_render_explicit_module
+    data = Article.create(title: 'Article One', subtitle: 'My subtitle')
+
+    assert_equal({ 'body' => 'explicit body', 'title' => 'Article One' },
+                 ArticleSerializer.render(data, module: ExplicitBody))
+  end
+
   def test_render_several_modules
     data = Article.create(title: 'Article One', subtitle: 'My subtitle')
     expected = { 'body' => 'Adjusted body for Article One', 'url' => 'http://blah/article-one',

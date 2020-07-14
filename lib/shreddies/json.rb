@@ -86,9 +86,9 @@ module Shreddies
       # Extend with the :module option if given.
       if options[:module]
         Array(options[:module]).each do |m|
-          next unless (mod = "#{self.class}::#{m}".constantize)
+          mod = m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
 
-          extend(mod)
+          extend mod
         end
       end
     end
