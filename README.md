@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-Serializers should be named after your models and located in "`app/serializers`". Any public methods you define will be serialized, and you can quickly expose methods from the serialized subject using the `delegate` class method.
+Serializers should be named after your models and located in "`app/serializers`". Any public methods you define will be serialized, and you can quickly expose methods from the serialized subject using the `delegate` class method, which simply delegates to the subject.
 
 ```ruby
 # app/serializers/user_serializer.rb
@@ -65,6 +65,30 @@ Model collections and array's are also supported:
 User.all.as_json
 ```
 
+You may find that you don't want or need to return as much data in collections of objects, or may want to include differtent data. So if a serializer defines a `Collection` module, and a collection or array is being rendered, then that Collection module will automatically be included:
+
+```ruby
+ArticleSerializer < Shreddies::Json
+  module Collection
+    def url
+      "https://blah.com/#{subject.slug}"
+    end
+  end
+end
+```
+
+Conversely, you can define a `Single` module, and that will be included when rendering a single object.
+
+```ruby
+ArticleSerializer < Shreddies::Json
+  module Single
+    def body
+      'this body is really, really long, and I do not want it returned in lists.'
+    end
+  end
+end
+```
+
 ### Options
 
 Both `#as_json` and `.render` accepts an `options` hash, which will be forwarded to the serializer class, and available as `options`. This allows you to pass arbitrary options and use them in your serializer.
@@ -78,6 +102,26 @@ By default `#as_json` will look for a serializer named after your model. So a `U
 ```ruby
 User.all.as_json serializer: User::AdminSerializer
 ```
+
+#### `module`
+
+You can pass one or module names in the `module` option, and these modules will be included into the serializer. This is great for selectively including attributes and methods.
+
+```ruby
+Article.all.as_json module: :WithBody
+```
+
+```ruby
+ArticleSerializer < Shreddies::Json
+  module WithBody
+    def body
+      'This article body is really, really long'
+    end
+  end
+end
+```
+
+The `Collection` and `Single` modules can be defined and they will be automatically included. The Collection module will be included when rendering an array or ActiveRecord collection (`ActiveRecord::Relation`), and the Single module will be included when rendering a single obejct.
 
 #### `index_by`
 

@@ -11,4 +11,9 @@ ActiveRecord::Schema.define do
   create_table :posts do |t|
     t.text :title
   end
+
+  create_table :articles do |t|
+    t.text :title
+    t.text :subtitle
+  end
 end

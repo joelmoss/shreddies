@@ -23,14 +23,14 @@ class Shreddies::JsonTest < Minitest::Test
 
     assert_equal({ 'adminTeam' => 'devs', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
                  User::AdminSerializer.render(user))
-  end
+    end
 
   def test_render_deep_namespaced_serializer
     user = User::Admin.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
 
     assert_equal({ 'adminTeam' => 'bots', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
                  User::Admin::BotSerializer.render(user))
-  end
+    end
 
   def test_render_an_array
     data = [
@@ -40,6 +40,38 @@ class Shreddies::JsonTest < Minitest::Test
 
     assert_equal [{ 'name' => 'Joel Moss' }, { 'name' => 'Joel2 Moss2' }],
                  MyUserSerializer.render(data)
+  end
+
+  def test_auto_render_single_module
+    data = Article.create(title: 'Article One')
+
+    assert_equal({ 'body' => 'A really, really long body for Article One',
+                   'title' => 'Article One' },
+                 ArticleSerializer.render(data))
+  end
+
+  def test_auto_render_collection_module
+    data = Article.create([{ title: 'Article One' }, { title: 'Article Two' }])
+
+    assert_equal [{ 'slug' => 'article-one', 'title' => 'Article One' },
+                  { 'slug' => 'article-two', 'title' => 'Article Two' }],
+                 ArticleSerializer.render(data)
+  end
+
+  def test_render_module
+    data = Article.create(title: 'Article One', subtitle: 'My subtitle')
+
+    assert_equal({ 'body' => 'Some body for Article One', 'title' => 'Article One',
+                   'subtitle' => 'My subtitle' },
+                 ArticleSerializer.render(data, module: :WithBody))
+  end
+
+  def test_render_several_modules
+    data = Article.create(title: 'Article One', subtitle: 'My subtitle')
+    expected = { 'body' => 'Adjusted body for Article One', 'url' => 'http://blah/article-one',
+                 'title' => 'Article One', 'subtitle' => 'My subtitle' }
+
+    assert_equal(expected, ArticleSerializer.render(data, module: %i[WithBody WithUrl]))
   end
 
   def test_render_an_array_with_index_by_option
