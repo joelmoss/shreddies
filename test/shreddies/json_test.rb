@@ -50,6 +50,22 @@ class Shreddies::JsonTest < Minitest::Test
                  ArticleSerializer.render(data))
   end
 
+  def test_auto_render_inherited_single_modules
+    data = Article.create(title: 'Article One')
+
+    assert_equal({ 'body' => 'A really, really long body for Article One',
+                   'title' => 'Article One' },
+                 Article::VideoSerializer.render(data))
+  end
+
+  def test_auto_render_own_and_inherited_single_modules
+    data = Article.create(title: 'Article One')
+
+    assert_equal({ 'body' => 'body!',
+                   'title' => 'Article One', 'bodyAsHtml' => 'body as html' },
+                 Article::DocumentSerializer.render(data))
+  end
+
   def test_auto_render_collection_module
     data = Article.create([{ title: 'Article One' }, { title: 'Article Two' }])
 

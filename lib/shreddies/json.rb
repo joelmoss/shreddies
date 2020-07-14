@@ -75,12 +75,16 @@ module Shreddies
     private
 
     def extend_with_modules
-      # Extend with Collection module if it exists, and a collection is being rendered. Otherwise,
-      # extend with the Single module if that exists.
-      if options[:from_collection]
-        (collection_mod = "#{self.class}::Collection".safe_constantize) && extend(collection_mod)
-      else
-        (single_mod = "#{self.class}::Single".safe_constantize) && extend(single_mod)
+      self.class.ancestors.reverse.each do |ancestor|
+        next unless ancestor.to_s.end_with?('Serializer')
+
+        # Extend with Collection module if it exists, and a collection is being rendered. Otherwise,
+        # extend with the Single module if that exists.
+        if options[:from_collection]
+          (collection_mod = "#{ancestor}::Collection".safe_constantize) && extend(collection_mod)
+        else
+          (single_mod = "#{ancestor}::Single".safe_constantize) && extend(single_mod)
+        end
       end
 
       # Extend with the :module option if given.
