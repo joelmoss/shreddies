@@ -47,8 +47,8 @@ module Shreddies
     attr_reader :subject, :options, :from_collection
 
     def initialize(subject, options)
-      @subject = subject
-      @options = options
+      @subject = subject.is_a?(Hash) ? OpenStruct.new(subject) : subject
+      @options = { transform_keys: true }.merge(options)
 
       extend_with_modules
     end
@@ -56,7 +56,7 @@ module Shreddies
     # Travel through the ancestors that are serializers (class name ends with "Serializer"), and
     # call all public instance methods, returning a hash.
     def as_json
-      json = {}
+      output = {}.with_indifferent_access
       methods = Set.new(public_methods(false))
 
       self.class.ancestors.each do |ancestor|
@@ -66,13 +66,21 @@ module Shreddies
       end
 
       methods.map do |attr|
-        json[attr.to_s.camelize :lower] = public_send(attr)
+        output[attr] = public_send(attr)
       end
 
-      json.deep_transform_keys { |key| key.to_s.camelize :lower }
+      output = before_render(output)
+
+      return output unless options[:transform_keys]
+
+      output.deep_transform_keys { |key| key.to_s.camelize :lower }
     end
 
     private
+
+    def before_render(output)
+      output
+    end
 
     def extend_with_modules
       self.class.ancestors.reverse.each do |ancestor|

@@ -12,6 +12,11 @@ class Shreddies::JsonTest < Minitest::Test
     assert_equal expect, MyUserSerializer.render(first_name: 'Joel', last_name: 'Moss')
   end
 
+  def test_before_render
+    expect = { 'name' => 'Joel Moss', 'middleName' => 'Kevin' }
+    assert_equal expect, BeforeSerializer.render(first_name: 'Joel', last_name: 'Moss')
+  end
+
   def test_render_a_single_active_record
     user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
 

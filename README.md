@@ -65,6 +65,8 @@ Model collections and array's are also supported:
 User.all.as_json
 ```
 
+### Collection and Single Modules
+
 You may find that you don't want or need to return as much data in collections of objects, or may want to include differtent data. So if a serializer defines a `Collection` module, and a collection or array is being rendered, then that Collection module will automatically be included:
 
 ```ruby
@@ -88,6 +90,10 @@ ArticleSerializer < Shreddies::Json
   end
 end
 ```
+
+### `before_render` callback
+
+You can define a `#before_render` private method in your serializers, which will act as a callback. It receives the object to be output, and expects you to return the object, which allows you to modify it before rendering.
 
 ### Options
 
@@ -122,6 +128,10 @@ end
 ```
 
 The `Collection` and `Single` modules can be defined and they will be automatically included. The Collection module will be included when rendering an array or ActiveRecord collection (`ActiveRecord::Relation`), and the Single module will be included when rendering a single obejct.
+
+#### `transform_keys` (default: true)
+
+If false, the returned keys will not be transformed. The default is to deeply transform all keys to camelCase.
 
 #### `index_by`
 
