@@ -129,4 +129,22 @@ class Shreddies::JsonTest < Minitest::Test
                'Joel2' => { 'name' => 'Joel2 Moss2', 'email' => 'joel2@moss2.com' } }
     assert_equal expect, UserSerializer.render(User.all, index_by: :first_name)
   end
+
+  def test_associations
+    user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
+    articles = user.articles.create([{ title: 'Article One' }, { title: 'Article Two' }])
+
+    expect = {
+      'latestArticle' => {
+        'body' => 'A really, really long body for Article One',
+        'title' => 'Article One'
+      },
+      'articles' => [
+        { 'slug' => 'article-one', 'title' => 'Article One' },
+        { 'slug' => 'article-two', 'title' => 'Article Two' }
+      ],
+      'name' => 'Joel Moss', 'email' => 'joel@moss.com'
+    }
+    assert_equal expect, UserSerializer.render(user, module: :WithArticles)
+  end
 end

@@ -15,5 +15,6 @@ ActiveRecord::Schema.define do
   create_table :articles do |t|
     t.text :title
     t.text :subtitle
+    t.integer :user_id
   end
 end

@@ -66,7 +66,12 @@ module Shreddies
       end
 
       methods.map do |attr|
-        output[attr] = public_send(attr)
+        res = public_send(attr)
+        if res.is_a?(ActiveRecord::Relation) || res.is_a?(ActiveRecord::Base)
+          res = res.as_json(transform_keys: options[:transform_keys])
+        end
+
+        output[attr] = res
       end
 
       output = before_render(output)
@@ -98,9 +103,7 @@ module Shreddies
       # Extend with the :module option if given.
       if options[:module]
         Array(options[:module]).each do |m|
-          mod = m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
-
-          extend mod
+          extend m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
         end
       end
     end

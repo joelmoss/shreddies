@@ -2,6 +2,8 @@
 
 Shreddies is a JSON serialization library for Rails that focuses on simplicity and speed. No more "magic" DSL's - just plain old Ruby objects! It's primarily intended to serialize Rails models as JSON, but will also work with pretty much anything at all.
 
+Shreddies primary principle is to be explicit. So a serializer will return nothing until you define some methods. This gives you complete control and everything is a known quantity - no surprises.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -87,6 +89,36 @@ ArticleSerializer < Shreddies::Json
     def body
       'this body is really, really long, and I do not want it returned in lists.'
     end
+  end
+end
+```
+
+### ActiveRecord Associations
+
+ActiveRecord associations are supported with no additional work on your part. Shreddies will simply call `#as_json` on any method that returns an ActiveRecord model or relation.
+
+```ruby
+# app/serializers/user_serializer.rb
+class UserSerializer < Shreddies::Json
+  delegate :articles
+
+  def latest_article
+    articles.latest
+  end
+end
+```
+
+And if you need to be specific about what you render, just call the serializer or `#as_json` directly:
+
+```ruby
+# app/serializers/user_serializer.rb
+class UserSerializer < Shreddies::Json
+  def articles
+    subject.articles.as_json index_by: :slug
+  end
+
+  def latest_article
+    LatestArticleSerializer.render articles.latest
   end
 end
 ```
