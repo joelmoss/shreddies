@@ -65,7 +65,7 @@ module Shreddies
         end
       end
 
-      methods.map do |attr|
+      methods.excluding(options[:except]).map do |attr|
         res = public_send(attr)
         if res.is_a?(ActiveRecord::Relation) || res.is_a?(ActiveRecord::Base)
           res = res.as_json(transform_keys: options[:transform_keys])

@@ -165,6 +165,14 @@ The `Collection` and `Single` modules can be defined and they will be automatica
 
 If false, the returned keys will not be transformed. The default is to deeply transform all keys to camelCase.
 
+#### `except`
+
+Pass one or more attribute names as a Symbol or Array of Symbols, and these will be excluded from the results:
+
+```ruby
+User.all.as_json(except: [:first_name, :age])
+```
+
 #### `index_by`
 
 Give this option a property of your serialized subject as a Symbol, and the returned collection will be a Hash keyed by that property.
