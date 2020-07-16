@@ -65,7 +65,15 @@ module Shreddies
         end
       end
 
-      methods.excluding(options[:except]).map do |attr|
+      # Filter out methods using the `only` or `except` options.
+      if options[:only]
+        options[:only] = Array(options[:only])
+        methods = methods.select { |x| options[:only].include? x }
+      elsif options[:except]
+        methods = methods.excluding(options[:except])
+      end
+
+      methods.map do |attr|
         res = public_send(attr)
         if res.is_a?(ActiveRecord::Relation) || res.is_a?(ActiveRecord::Base)
           res = res.as_json(transform_keys: options[:transform_keys])

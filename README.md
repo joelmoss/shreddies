@@ -173,6 +173,16 @@ Pass one or more attribute names as a Symbol or Array of Symbols, and these will
 User.all.as_json(except: [:first_name, :age])
 ```
 
+#### `only`
+
+Pass one or more attribute names as a Symbol or Array of Symbols, and _ONLY_ these will be included in the results:
+
+```ruby
+User.all.as_json(only: :first_name)
+```
+
+> Attributes must still be defined within the Serializer.
+
 #### `index_by`
 
 Give this option a property of your serialized subject as a Symbol, and the returned collection will be a Hash keyed by that property.

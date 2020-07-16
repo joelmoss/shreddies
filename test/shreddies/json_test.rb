@@ -138,6 +138,14 @@ class Shreddies::JsonTest < Minitest::Test
     assert_equal expect, UserSerializer.render(User.all, except: :email)
   end
 
+  def test_only
+    User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
+    User.create(first_name: 'Joel2', last_name: 'Moss2', email: 'joel2@moss2.com')
+
+    expect = [{ 'name' => 'Joel Moss' }, { 'name' => 'Joel2 Moss2' }]
+    assert_equal expect, UserSerializer.render(User.all, only: :name)
+  end
+
   def test_associations
     user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
     articles = user.articles.create([{ title: 'Article One' }, { title: 'Article Two' }])
