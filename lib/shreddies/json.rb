@@ -44,11 +44,11 @@ module Shreddies
       super(*methods, to: to, prefix: prefix, allow_nil: allow_nil, private: private)
     end
 
-    attr_reader :subject, :options, :from_collection
+    attr_reader :subject, :options
 
-    def initialize(subject, options)
+    def initialize(subject, opts = {})
       @subject = subject.is_a?(Hash) ? OpenStruct.new(subject) : subject
-      @options = { transform_keys: true }.merge(options)
+      @options = { transform_keys: true }.merge(opts)
 
       extend_with_modules
     end
@@ -66,17 +66,17 @@ module Shreddies
       end
 
       # Filter out methods using the `only` or `except` options.
-      if options[:only]
-        options[:only] = Array(options[:only])
-        methods = methods.select { |x| options[:only].include? x }
-      elsif options[:except]
-        methods = methods.excluding(options[:except])
+      if @options[:only]
+        @options[:only] = Array(@options[:only])
+        methods = methods.select { |x| @options[:only].include? x }
+      elsif @options[:except]
+        methods = methods.excluding(@options[:except])
       end
 
       methods.map do |attr|
         res = public_send(attr)
         if res.is_a?(ActiveRecord::Relation) || res.is_a?(ActiveRecord::Base)
-          res = res.as_json(transform_keys: options[:transform_keys])
+          res = res.as_json(transform_keys: @options[:transform_keys])
         end
 
         output[attr] = res
@@ -84,7 +84,7 @@ module Shreddies
 
       output = before_render(output)
 
-      return output unless options[:transform_keys]
+      return output unless @options[:transform_keys]
 
       output.deep_transform_keys { |key| key.to_s.camelize :lower }
     end
@@ -101,7 +101,7 @@ module Shreddies
 
         # Extend with Collection module if it exists, and a collection is being rendered. Otherwise,
         # extend with the Single module if that exists.
-        if options[:from_collection]
+        if @options[:from_collection]
           (collection_mod = "#{ancestor}::Collection".safe_constantize) && extend(collection_mod)
         else
           (single_mod = "#{ancestor}::Single".safe_constantize) && extend(single_mod)
@@ -109,8 +109,8 @@ module Shreddies
       end
 
       # Extend with the :module option if given.
-      if options[:module]
-        Array(options[:module]).each do |m|
+      if @options[:module]
+        Array(@options[:module]).each do |m|
           extend m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
         end
       end
