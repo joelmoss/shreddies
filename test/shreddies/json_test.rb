@@ -28,14 +28,14 @@ class Shreddies::JsonTest < Minitest::Test
 
     assert_equal({ 'adminTeam' => 'devs', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
                  User::AdminSerializer.render(user))
-    end
+  end
 
   def test_render_deep_namespaced_serializer
     user = User::Admin.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
 
     assert_equal({ 'adminTeam' => 'bots', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
                  User::Admin::BotSerializer.render(user))
-    end
+  end
 
   def test_render_an_array
     data = [
@@ -148,7 +148,7 @@ class Shreddies::JsonTest < Minitest::Test
 
   def test_associations
     user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
-    articles = user.articles.create([{ title: 'Article One' }, { title: 'Article Two' }])
+    user.articles.create([{ title: 'Article One' }, { title: 'Article Two' }])
 
     expect = {
       'latestArticle' => {

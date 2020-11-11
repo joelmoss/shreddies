@@ -48,7 +48,7 @@ module Shreddies
 
     def initialize(subject, opts = {})
       @subject = subject.is_a?(Hash) ? OpenStruct.new(subject) : subject
-      @options = { transform_keys: true }.merge(opts)
+      @options = { transform_keys: true }.merge(opts).with_indifferent_access
 
       extend_with_modules
     end
