@@ -8,6 +8,8 @@ module Shreddies
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
           serializer = serializer.to_s.safe_constantize
+        elsif serializer.is_a?(Proc)
+          return serializer.call
         end
 
         serializer ? serializer.render_as_json(self, options) : super
@@ -20,6 +22,8 @@ module Shreddies
 
         if serializer.is_a?(String) || serializer.is_a?(Symbol)
           serializer = serializer.to_s.safe_constantize
+        elsif serializer.is_a?(Proc)
+          return serializer.call
         end
 
         serializer ? serializer.render_as_json(self, options) : super
