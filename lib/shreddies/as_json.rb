@@ -10,6 +10,9 @@ module Shreddies
           serializer = serializer.to_s.safe_constantize
         elsif serializer.is_a?(Proc)
           return serializer.call
+        elsif serializer.is_a?(Hash)
+          options = serializer
+          serializer = "#{model_name}Serializer".safe_constantize
         end
 
         serializer ? serializer.render_as_json(self, options) : super
@@ -24,6 +27,9 @@ module Shreddies
           serializer = serializer.to_s.safe_constantize
         elsif serializer.is_a?(Proc)
           return serializer.call
+        elsif serializer.is_a?(Hash)
+          options = serializer
+          serializer = "#{model_name}Serializer".safe_constantize
         end
 
         serializer ? serializer.render_as_json(self, options) : super

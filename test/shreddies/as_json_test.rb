@@ -19,10 +19,17 @@ class Shreddies::AsJsonTest < Minitest::Test
     assert_equal({ 'id' => post.id, 'title' => 'My blog post' }, post.as_json)
   end
 
-  def test_as_json_with_serializer_option
+  def test_as_json_with_serializer_name_option
     user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
 
     assert_equal({ 'name' => 'Joel Moss' }, user.as_json(serializer: MyUserSerializer))
+  end
+
+  def test_as_json_with_serializer_hash_option
+    user = User.create(first_name: 'Joel', last_name: 'Moss', email: 'joel@moss.com')
+
+    assert_equal({ 'lastName' => 'Moss', 'name' => 'Joel Moss', 'email' => 'joel@moss.com' },
+                 user.as_json(serializer: { module: :WithLastName }))
   end
 
   def test_as_json_with_explicit_namespaced_serializer
