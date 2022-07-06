@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'activerecord', '>= 5'
-  spec.add_dependency 'railties', '>= 5'
+  spec.add_runtime_dependency 'activerecord', '>= 6'
+  spec.add_dependency 'railties', '>= 6'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
