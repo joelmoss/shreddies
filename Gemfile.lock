@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shreddies (0.10.0)
+    shreddies (1.0.0)
       activerecord (>= 7.0, < 9.0)
       railties (>= 7.0, < 9.0)
 
