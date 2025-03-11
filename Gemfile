@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in shreddies.gemspec
 gemspec
 
+gem 'appraisal'
 gem 'autotest-suffix'
 gem 'combustion'
 gem 'debug'
