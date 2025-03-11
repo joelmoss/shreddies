@@ -16,7 +16,7 @@ module Shreddies
       #                attributes. Eg. `ArticleSerializer.render(data, module: :WithBody)`.
       #
       def render(subject, options = {})
-        index_by = options.delete(:index_by)
+        index_by = options[:index_by]
 
         if subject.is_a?(Array) || subject.is_a?(ActiveRecord::Relation)
           collection_options = options.merge(from_collection: true)

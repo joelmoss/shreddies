@@ -4,7 +4,7 @@ module Shreddies
   module AsJson
     module ActiveRecordBase
       def as_json(options = {})
-        serializer = options.delete(:serializer) || "#{model_name}Serializer"
+        serializer = options[:serializer] || "#{model_name}Serializer"
 
         case serializer
         when String, Symbol
@@ -22,7 +22,7 @@ module Shreddies
 
     module ActiveRecordRelation
       def as_json(options = {})
-        serializer = options.delete(:serializer) || "#{model_name}Serializer"
+        serializer = options[:serializer] || "#{model_name}Serializer"
 
         case serializer
         when String, Symbol
