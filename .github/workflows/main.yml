@@ -1,0 +1,35 @@
+name: main
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+        ruby-version: ["3.2", "3.3", "3.4"]
+    runs-on: ${{ matrix.os }}
+
+    env:
+      RAILS_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+          rubygems: latest
+      - run: bundle exec appraisal install --jobs 4
+      - run: bundle exec appraisal rake
+
+  rubocop:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          cache-version: 1
+      - run: bundle exec rubocop -P --fail-level C
