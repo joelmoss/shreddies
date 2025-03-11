@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-class User::AdminSerializer < UserSerializer
-  def admin_team
-    'devs'
+class User
+  class AdminSerializer < UserSerializer
+    def admin_team
+      'devs'
+    end
   end
 end

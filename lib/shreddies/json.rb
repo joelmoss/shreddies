@@ -41,13 +41,13 @@ module Shreddies
 
     # Monkey patches Rails Module#delegate so that the `:to` argument defaults to `:subject`.
     def self.delegate(*methods, to: :subject, prefix: nil, allow_nil: nil, private: nil)
-      super(*methods, to: to, prefix: prefix, allow_nil: allow_nil, private: private)
+      super
     end
 
     attr_reader :subject, :options
 
     def initialize(subject, opts = {})
-      @subject = subject.is_a?(Hash) ? OpenStruct.new(subject) : subject
+      @subject = subject.is_a?(Hash) ? ActiveSupport::OrderedOptions[subject] : subject
       @options = { transform_keys: true }.merge(opts).with_indifferent_access
 
       extend_with_modules
@@ -109,10 +109,10 @@ module Shreddies
       end
 
       # Extend with the :module option if given.
-      if @options[:module]
-        Array(@options[:module]).each do |m|
-          extend m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
-        end
+      return unless @options[:module]
+
+      Array(@options[:module]).each do |m|
+        extend m.is_a?(Module) ? m : "#{self.class}::#{m}".constantize
       end
     end
   end

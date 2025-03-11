@@ -1,8 +1,19 @@
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
 AllCops:
+  TargetRubyVersion: 3.2.0
   NewCops: enable
+  Exclude:
+    - gemfiles/*
+    - vendor/**/*
+
 Style/Documentation:
   Enabled: false
+
 Layout/LineLength:
   Max: 100
-Metrics/MethodLength:
-  Max: 12
+
+Metrics:
+  Enabled: false

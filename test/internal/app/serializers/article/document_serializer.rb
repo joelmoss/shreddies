@@ -1,11 +1,15 @@
-class Article::DocumentSerializer < ArticleSerializer
-  module Single
-    def body_as_html
-      'body as html'
-    end
+# frozen_string_literal: true
 
-    def body
-      'body!'
+class Article
+  class DocumentSerializer < ArticleSerializer
+    module Single
+      def body_as_html
+        'body as html'
+      end
+
+      def body
+        'body!'
+      end
     end
   end
 end
